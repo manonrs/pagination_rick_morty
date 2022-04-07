@@ -20,10 +20,10 @@ class AppCoordinator: Coordinator, AppCoordinatorProtocol {
 
     func start() {
         print("ok")
-        showSubScreen()
+        showListScreen()
     }
     
-    func showSubScreen() {
+    func showListScreen() {
         let homeVC = ListViewController()
 //        let homeVCViewModel = ListViewModel()
 //        homeVCViewModel.viewDelegate = homeVC
@@ -56,7 +56,7 @@ protocol AppCoordinatorProtocol: Coordinator {
     
     func start()
     
-    func showSubScreen()
+    func showListScreen()
     
 //    func showNewSubScreenFor()
     

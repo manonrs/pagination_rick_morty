@@ -70,9 +70,8 @@ class ListViewController: UIViewController {
             switch itemIdentifier {
             case .character(let result):
                 let cell = tableView.dequeueReusableCell(withIdentifier: "CharacterCell", for: indexPath)
-                cell.textLabel?.text = result.name
-                cell.imageView?.loadImage(result.image)
-//                cell.register
+//                cell.textLabel?.text = result.name
+//                cell.imageView?.loadImage(result.image)
                 return cell
             }
         }
