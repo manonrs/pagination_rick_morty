@@ -49,7 +49,7 @@ class ListViewController: UIViewController {
     }
 
     private func setupView() {
-        
+        tableView.register(CharacterCell.self, forCellReuseIdentifier: CharacterCell.identifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
@@ -69,7 +69,12 @@ class ListViewController: UIViewController {
         diffableDataSource = UITableViewDiffableDataSource<Section, Item>.init(tableView: tableView) { tableView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .character(let result):
-                let cell = tableView.dequeueReusableCell(withIdentifier: "CharacterCell", for: indexPath)
+                
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "CharacterCell", for: indexPath) as? CharacterCell else {
+                    assertionFailure("The dequeue collection view cell was of the wrong type")
+                    return UITableViewCell()
+                }
+                print("all good")
 //                cell.textLabel?.text = result.name
 //                cell.imageView?.loadImage(result.image)
                 return cell

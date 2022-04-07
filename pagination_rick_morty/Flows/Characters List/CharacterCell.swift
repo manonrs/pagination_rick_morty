@@ -10,17 +10,19 @@ import UIKit
 class CharacterCell: UITableViewCell {
     static let identifier = "CharacterCell"
     
-//    override init(frame: CGRect) {
-//            super.init(frame: frame)
-//            configureCell()
-//        }
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .default, reuseIdentifier: reuseIdentifier)
+        configureCell()
+    }
         
         required init?(coder: NSCoder) {
             super.init(coder: coder)
             configureCell()
+//            cell.iden
         }
     
     private func configureCell() {
         print("we're in configureCell()")
+//        cell.register(withresusable)
     }
 }
