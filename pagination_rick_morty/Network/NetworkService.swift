@@ -14,9 +14,23 @@ class NetworkService {
             return formatter
         }()
     
-    func fetchAllCharacters (completion: @escaping (CharacterRequestResult) -> Void) {
-        guard let url = URL(string: "https://rickandmortyapi.com/api/character") else { return }
-        
+    func fetchAllCharacters(pagination: Bool, completion: @escaping (CharacterRequestResult) -> Void) {
+//        var isPaginating = false
+        var pageNumberToLoad: Int?
+//
+//        if pagination {
+//            isPaginating = true
+//            pageNumberToLoad += pageNumberToLoad
+//        }
+        if pagination == false {
+            pageNumberToLoad = 1
+            //load 1ère page
+        } else {
+           // load page +1
+            pageNumberToLoad! += 1
+        }
+        guard let url = URL(string: "https://rickandmortyapi.com/api/character?page=\(pageNumberToLoad ?? 1)") else { return }
+        print("here is the url", url)
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             
             if let error = error {
@@ -43,7 +57,9 @@ class NetworkService {
             } catch {
                 print(error)
             }
-            
+//            if pagination {
+//                isPaginating = false
+//            }
         }
         task.resume()
         

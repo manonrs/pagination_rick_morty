@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ListViewController: UIViewController {
+class ListViewController: UIViewController, UITableViewDelegate {
 
     var networkService = NetworkService()
     private enum Section {
@@ -26,22 +26,26 @@ class ListViewController: UIViewController {
     private var diffableDataSource: UITableViewDiffableDataSource<Section, Item>!
 
     // MARK: - View Lifecycle
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print("were in view will appear")
+        fetchCharactersFromApi(pagination: false)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        tableView.delegate = self
         setupView()
         configureDataSource()
-        fetchCharactersFromApi()
     }
 
     // MARK: - Private Methods
     
-    func fetchCharactersFromApi() {
-        networkService.fetchAllCharacters() { [weak self] (characterRequestResult) in
+    func fetchCharactersFromApi(pagination: Bool) {
+        networkService.fetchAllCharacters(pagination: pagination) { [weak self] (characterRequestResult) in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.characters = characterRequestResult.results
-                print("self.character is", characterRequestResult)
                 let snapshot = self.createSnapshot(array: self.characters)
                 self.diffableDataSource.apply(snapshot)
             }
@@ -69,14 +73,12 @@ class ListViewController: UIViewController {
         diffableDataSource = UITableViewDiffableDataSource<Section, Item>.init(tableView: tableView) { tableView, indexPath, itemIdentifier in
             switch itemIdentifier {
             case .character(let result):
-                
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "CharacterCell", for: indexPath) as? CharacterCell else {
                     assertionFailure("The dequeue collection view cell was of the wrong type")
                     return UITableViewCell()
                 }
-                print("all good")
-//                cell.textLabel?.text = result.name
-//                cell.imageView?.loadImage(result.image)
+                cell.textLabel?.text = result.name
+                cell.imageView?.loadImage(result.image)
                 return cell
             }
         }
@@ -112,6 +114,16 @@ extension ListViewController: UISearchResultsUpdating {
         let snapshot = createSnapshot(array: filteredArray)
         diffableDataSource.apply(snapshot)
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let position = scrollView.contentOffset.y
+        if position > (tableView.contentSize.height-50-scrollView.frame.size.height) {
+            //Fetching next data
+            print("new data should appear")
+            fetchCharactersFromApi(pagination: true)
+        }
+    }
+    
 }
 
 extension UIImageView {
@@ -125,4 +137,5 @@ extension UIImageView {
         }
     }
 }
+
 

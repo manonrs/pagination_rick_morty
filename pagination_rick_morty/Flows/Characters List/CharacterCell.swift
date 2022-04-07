@@ -22,7 +22,7 @@ class CharacterCell: UITableViewCell {
         }
     
     private func configureCell() {
-        print("we're in configureCell()")
+//        print("we're in configureCell()")
 //        cell.register(withresusable)
     }
 }
