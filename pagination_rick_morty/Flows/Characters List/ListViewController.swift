@@ -22,6 +22,8 @@ class ListViewController: UIViewController, UITableViewDelegate {
 
     // MARK: - Properties
     private var characters: [Character] = []
+    private var currentPage = 1
+    private var loader = UIActivityIndicatorView()
     private var tableView = UITableView()
     private var diffableDataSource: UITableViewDiffableDataSource<Section, Item>!
 
@@ -29,7 +31,7 @@ class ListViewController: UIViewController, UITableViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         print("were in view will appear")
-        fetchCharactersFromApi(pagination: false)
+        fetchCharactersFromApi()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,11 +43,12 @@ class ListViewController: UIViewController, UITableViewDelegate {
 
     // MARK: - Private Methods
     
-    func fetchCharactersFromApi(pagination: Bool) {
-        networkService.fetchAllCharacters(pagination: pagination) { [weak self] (characterRequestResult) in
+    func fetchCharactersFromApi() {
+        networkService.fetchAllCharacters(currentPage: currentPage) { [weak self] (characterRequestResult) in
             guard let self = self else { return }
             DispatchQueue.main.async {
-                self.characters = characterRequestResult.results
+                self.characters.append(contentsOf: characterRequestResult.results)
+//                self.characters = characterRequestResult.results
                 let snapshot = self.createSnapshot(array: self.characters)
                 self.diffableDataSource.apply(snapshot)
             }
@@ -56,11 +59,20 @@ class ListViewController: UIViewController, UITableViewDelegate {
         tableView.register(CharacterCell.self, forCellReuseIdentifier: CharacterCell.identifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(tableView)
+        loader.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(loader)
+        loader.style = .medium
+        
         NSLayoutConstraint.activate([
         tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
         tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
         tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-        tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        loader.topAnchor.constraint(equalTo: tableView.bottomAnchor),
+        loader.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+        loader.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+        loader.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        loader.heightAnchor.constraint(equalToConstant: 40)
         ])
         
         let searchController = UISearchController(searchResultsController: nil)
@@ -115,13 +127,22 @@ extension ListViewController: UISearchResultsUpdating {
         diffableDataSource.apply(snapshot)
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {}
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {}
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        loader.isHidden = false
+        loader.startAnimating()
         let position = scrollView.contentOffset.y
         if position > (tableView.contentSize.height-50-scrollView.frame.size.height) {
             //Fetching next data
-            print("new data should appear")
-            fetchCharactersFromApi(pagination: true)
+            print("next page datas should appear")
+            currentPage += 1
+            fetchCharactersFromApi()
         }
+        loader.stopAnimating()
+        loader.isHidden = true
     }
     
 }
@@ -131,9 +152,7 @@ extension UIImageView {
         DispatchQueue.main.async { [weak self] in
             guard let data = try? Data(contentsOf: urls),
                   let image = UIImage(data: data) else { return }
-            DispatchQueue.main.async  { [weak self] in
                 self?.image = image
-            }
         }
     }
 }
