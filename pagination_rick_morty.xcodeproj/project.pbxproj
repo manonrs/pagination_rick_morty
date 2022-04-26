@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		988625452816EC280081C960 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988625442816EC280081C960 /* Item.swift */; };
+		988625472816ECEF0081C960 /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988625462816ECEF0081C960 /* ImageCache.swift */; };
 		98DBEC2A27FEE29C0005523E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98DBEC2927FEE29C0005523E /* AppDelegate.swift */; };
 		98DBEC2C27FEE29C0005523E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98DBEC2B27FEE29C0005523E /* SceneDelegate.swift */; };
 		98DBEC2E27FEE29C0005523E /* ListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98DBEC2D27FEE29C0005523E /* ListViewController.swift */; };
@@ -42,6 +44,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		988625442816EC280081C960 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		988625462816ECEF0081C960 /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		98DBEC2627FEE29C0005523E /* pagination_rick_morty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pagination_rick_morty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		98DBEC2927FEE29C0005523E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		98DBEC2B27FEE29C0005523E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -155,6 +159,8 @@
 			isa = PBXGroup;
 			children = (
 				98DBEC2D27FEE29C0005523E /* ListViewController.swift */,
+				988625442816EC280081C960 /* Item.swift */,
+				988625462816ECEF0081C960 /* ImageCache.swift */,
 				98DBEC6627FF10700005523E /* ListViewModel.swift */,
 				98DBEC6427FF104A0005523E /* CharacterCell.swift */,
 			);
@@ -313,6 +319,8 @@
 				98DBEC2A27FEE29C0005523E /* AppDelegate.swift in Sources */,
 				98DBEC6527FF104A0005523E /* CharacterCell.swift in Sources */,
 				98DBEC3427FEE29C0005523E /* pagination_rick_morty.xcdatamodeld in Sources */,
+				988625472816ECEF0081C960 /* ImageCache.swift in Sources */,
+				988625452816EC280081C960 /* Item.swift in Sources */,
 				98DBEC5F27FF05460005523E /* CharacterRequestResult.swift in Sources */,
 				98DBEC6927FF10DE0005523E /* AppCoordinator.swift in Sources */,
 				98DBEC6727FF10700005523E /* ListViewModel.swift in Sources */,
