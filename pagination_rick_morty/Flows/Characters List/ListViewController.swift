@@ -7,14 +7,14 @@
 
 import UIKit
 
-class ListViewController: UIViewController, UITableViewDelegate {
+class ListViewController: UIViewController {
 
     private enum Section {
         case main
     }
     
     private enum Item: Hashable {
-        case character(Character)
+        case character(Character, ids: UUID = UUID())
     }
 
 
@@ -38,7 +38,6 @@ class ListViewController: UIViewController, UITableViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         tableView.delegate = self
         setupView()
         configureDataSource()
@@ -89,7 +88,7 @@ class ListViewController: UIViewController, UITableViewDelegate {
     private func configureDataSource() {
         diffableDataSource = UITableViewDiffableDataSource<Section, Item>.init(tableView: tableView) { tableView, indexPath, itemIdentifier in
             switch itemIdentifier {
-            case .character(let result):
+            case .character(let result, _):
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "CharacterCell", for: indexPath) as? CharacterCell else {
                     assertionFailure("The dequeue collection view cell was of the wrong type")
                     return UITableViewCell()
@@ -99,10 +98,9 @@ class ListViewController: UIViewController, UITableViewDelegate {
 
                 cell.textLabel?.text = result.name
                 print(representedIdentifier, cell.representedIdentifier, representedIdentifier == cell.representedIdentifier)
-                // Start working on caching image by getting their ID
+                // 1st work on caching image by getting their ID (checkin if the cell id is matching the item id (to avoid image glitch where it goes in wrong cell)
                 if (cell.representedIdentifier == representedIdentifier) {
                 cell.imageView?.loadImage(result.image)
-    
                 }
                 return cell
             }
@@ -115,7 +113,12 @@ class ListViewController: UIViewController, UITableViewDelegate {
     private func createSnapshot(array: [Character]) -> NSDiffableDataSourceSnapshot<Section, Item> {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([Section.main])
-        let items = array.map(Item.character)
+//        let items = array.map(Item.character)
+        
+        let items = array.map { value in
+            Item.character(value, ids: UUID())
+        }
+        
         snapshot.appendItems(items, toSection: .main)
         return snapshot
     }
@@ -151,10 +154,10 @@ extension ListViewController: UISearchResultsUpdating {
         // reload new characters when
         let position = scrollView.contentOffset.y
         if position > (tableView.contentSize.height-50-scrollView.frame.size.height) {
-            //adding loader
+            // adding loader to list bottom while fetching next datas
             loader.isHidden = false
             loader.startAnimating()
-            //Fetching next data
+            // Fetching next data when the list bottom is reached
             print("next page datas should appear")
             currentPage += 1
             fetchCharactersFromApi()
@@ -173,26 +176,12 @@ extension UIImageView {
     }
 }
 
-// ?
+extension ListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let newVC = UIViewController()
+        navigationController?.pushViewController(newVC, animated: true)
+        print("cell has been selected")
+    }
+}
 
-//extension UIImage {
-//
-//    func decodedImage() -> UIImage {
-//        guard let cgImage = cgImage else { return self }
-//        let size = CGSize(width: cgImage.width, height: cgImage.height)
-//        let colorSpace = CGColorSpaceCreateDeviceRGB()
-//        let context = CGContext(data: nil,
-//                                width: Int(size.width),
-//                                height: Int(size.height),
-//                                bitsPerComponent: 16,
-//                                bytesPerRow: cgImage.bytesPerRow,
-//                                space: colorSpace,
-//                                bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue)
-//
-//        context?.draw(cgImage,
-//                      in: CGRect(origin: .zero, size: size))
-//
-//        guard let decodedImage = context?.makeImage() else { return self }
-//        return UIImage(cgImage: decodedImage)
-//    }
-//}
