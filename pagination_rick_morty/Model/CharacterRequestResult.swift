@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CharacterRequestResult: Decodable { //renommer CharacterRequestResult
+struct CharacterRequestResult: Decodable { 
     
     let results: [Character]
 }
